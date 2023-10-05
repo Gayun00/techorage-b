@@ -27,4 +27,14 @@ export class ArticlesService {
   getArticleById(id: string): Article {
     return this.articles.find((article) => article.id == id);
   }
+
+  deleteArticle(id: string): void {
+    this.articles = this.articles.filter((article) => article.id !== id);
+  }
+
+  updateArticleKeyword(id: string, keywords: string[]) {
+    const article = this.getArticleById(id);
+    article.keywords = keywords;
+    return article;
+  }
 }
