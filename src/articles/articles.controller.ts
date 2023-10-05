@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Article } from './articles.model';
+import { CreateArticleDto } from './dto/create-article.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -12,11 +13,7 @@ export class ArticlesController {
   }
 
   @Post('')
-  createArticle(
-    @Body('title') title: string,
-    @Body('text') text: string,
-    @Body('url') url: string,
-  ) {
-    return this.articlesService.createArticle(title, text, url);
+  createArticle(@Body() createArticleDto: CreateArticleDto) {
+    return this.articlesService.createArticle(createArticleDto);
   }
 }
