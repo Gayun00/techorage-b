@@ -23,4 +23,8 @@ export class ArticlesService {
     this.articles.push(article);
     return article;
   }
+
+  getArticleById(id: string): Article {
+    return this.articles.find((article) => article.id == id);
+  }
 }
