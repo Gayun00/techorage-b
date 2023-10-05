@@ -6,6 +6,8 @@ import {
   Param,
   Patch,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Article } from './articles.model';
@@ -20,7 +22,8 @@ export class ArticlesController {
     return this.articlesService.getAllArticles();
   }
 
-  @Post('')
+  @Post()
+  @UsePipes(ValidationPipe)
   createArticle(@Body() createArticleDto: CreateArticleDto) {
     return this.articlesService.createArticle(createArticleDto);
   }

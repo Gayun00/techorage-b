@@ -1,5 +1,5 @@
 import { CreateArticleDto } from './dto/create-article.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Article } from './articles.model';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -25,11 +25,22 @@ export class ArticlesService {
   }
 
   getArticleById(id: string): Article {
-    return this.articles.find((article) => article.id == id);
+    const article = this.articles.find((article) => article.id == id);
+    if (!article) {
+      throw new NotFoundException();
+    }
+
+    return article;
   }
 
   deleteArticle(id: string): void {
-    this.articles = this.articles.filter((article) => article.id !== id);
+    const found = this.getArticleById(id);
+
+    if (!found) {
+      throw new NotFoundException();
+    }
+
+    this.articles = this.articles.filter((article) => article.id !== found.id);
   }
 
   updateArticleKeyword(id: string, keywords: string[]) {
