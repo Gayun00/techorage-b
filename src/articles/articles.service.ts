@@ -53,8 +53,13 @@ export class ArticlesService {
   }
 
   async updateArticleKeyword(id: string, keywords: string[]) {
-    const article = await this.getArticleById(id);
+    const article = await this.articleRepository.findOne({ where: { id } });
+    if (!article) {
+      throw new Error(`Article with id ${id} not found`);
+    }
+
     article.keywords = keywords;
+    await this.articleRepository.save(article);
     return article;
   }
 }
