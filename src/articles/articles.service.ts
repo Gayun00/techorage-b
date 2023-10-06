@@ -2,29 +2,37 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Article } from './articles.model';
 import { v4 as uuidv4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ArticleRepository } from './article.repository';
 
 @Injectable()
 export class ArticlesService {
   private articles: Article[] = [];
 
+  constructor(
+    @InjectRepository(ArticleRepository)
+    private articleRepository: ArticleRepository,
+  ) {}
+
   getAllArticles(): Article[] {
     return this.articles;
   }
 
-  createArticle(createArticleDto: CreateArticleDto) {
+  async createArticle(createArticleDto: CreateArticleDto) {
     const { title, text, url } = createArticleDto;
-    const article: Article = {
+    const article = this.articleRepository.create({
       id: uuidv4(),
       title,
       text,
       url,
       keywords: [],
-    };
-    this.articles.push(article);
+    });
+
+    await this.articleRepository.save(article);
     return article;
   }
 
-  getArticleById(id: string): Article {
+  async getArticleById(id: string) {
     const article = this.articles.find((article) => article.id == id);
     if (!article) {
       throw new NotFoundException();
@@ -33,8 +41,8 @@ export class ArticlesService {
     return article;
   }
 
-  deleteArticle(id: string): void {
-    const found = this.getArticleById(id);
+  async deleteArticle(id: string) {
+    const found = await this.getArticleById(id);
 
     if (!found) {
       throw new NotFoundException();
@@ -43,8 +51,8 @@ export class ArticlesService {
     this.articles = this.articles.filter((article) => article.id !== found.id);
   }
 
-  updateArticleKeyword(id: string, keywords: string[]) {
-    const article = this.getArticleById(id);
+  async updateArticleKeyword(id: string, keywords: string[]) {
+    const article = await this.getArticleById(id);
     article.keywords = keywords;
     return article;
   }

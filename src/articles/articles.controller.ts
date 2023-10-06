@@ -29,7 +29,7 @@ export class ArticlesController {
   }
 
   @Get('/:id')
-  getArticleById(@Param('id') id: string): Article {
+  getArticleById(@Param('id') id: string): Promise<Article> {
     return this.articlesService.getArticleById(id);
   }
 

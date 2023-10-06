@@ -1,5 +1,6 @@
-import { BaseEntity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Article extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
@@ -12,4 +13,7 @@ export class Article extends BaseEntity {
 
   @Column()
   url: string;
+
+  @Column('text', { array: true })
+  keywords: string[];
 }
