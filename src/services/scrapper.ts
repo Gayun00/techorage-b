@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import cheerio from 'cheerio';
 
-export async function scrapArticle({ url }) {
+export async function scrapArticle(url) {
   const browser = await puppeteer.launch();
 
   const page = await browser.newPage();

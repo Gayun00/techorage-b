@@ -19,13 +19,8 @@ export class ArticlesService {
     return this.articles;
   }
 
-  async scrapAricleData(url: string) {
-    const scrapped = await scrapArticle({ url });
-    return scrapped;
-  }
-
   async createArticle(url: string) {
-    const { title, text } = await this.scrapAricleData(url);
+    const { title, text } = await scrapArticle(url);
     const article: CreateArticleDto = this.articleRepository.create({
       id: uuidv4(),
       title,

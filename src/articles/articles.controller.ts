@@ -23,7 +23,7 @@ export class ArticlesController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  createArticle(@Body() url: string) {
+  createArticle(@Body() { url }: { url: string }) {
     return this.articlesService.createArticle(url);
   }
 
