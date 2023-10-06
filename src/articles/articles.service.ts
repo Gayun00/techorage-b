@@ -15,8 +15,8 @@ export class ArticlesService {
     private articleRepository: ArticleRepository,
   ) {}
 
-  getAllArticles(): Article[] {
-    return this.articles;
+  getAllArticles(): Promise<Article[]> {
+    return this.articleRepository.find();
   }
 
   async createArticle(url: string) {

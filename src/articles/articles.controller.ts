@@ -17,7 +17,7 @@ export class ArticlesController {
   constructor(private articlesService: ArticlesService) {}
 
   @Get('/')
-  getAllArticles(): Article[] {
+  getAllArticles(): Promise<Article[]> {
     return this.articlesService.getAllArticles();
   }
 
