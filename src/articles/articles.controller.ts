@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Article } from './articles.model';
-import { CreateArticleDto } from './dto/create-article.dto';
 
 @Controller('articles')
 export class ArticlesController {
@@ -24,8 +23,8 @@ export class ArticlesController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  createArticle(@Body() createArticleDto: CreateArticleDto) {
-    return this.articlesService.createArticle(createArticleDto);
+  createArticle(@Body() url: string) {
+    return this.articlesService.createArticle(url);
   }
 
   @Get('/:id')

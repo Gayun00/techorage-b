@@ -4,6 +4,7 @@ import { Article } from './articles.model';
 import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleRepository } from './article.repository';
+import { scrapArticle } from 'src/services/scrapper';
 
 @Injectable()
 export class ArticlesService {
@@ -18,9 +19,14 @@ export class ArticlesService {
     return this.articles;
   }
 
-  async createArticle(createArticleDto: CreateArticleDto) {
-    const { title, text, url } = createArticleDto;
-    const article = this.articleRepository.create({
+  async scrapAricleData(url: string) {
+    const scrapped = await scrapArticle({ url });
+    return scrapped;
+  }
+
+  async createArticle(url: string) {
+    const { title, text } = await this.scrapAricleData(url);
+    const article: CreateArticleDto = this.articleRepository.create({
       id: uuidv4(),
       title,
       text,
@@ -33,6 +39,8 @@ export class ArticlesService {
   }
 
   async getArticleById(id: string) {
+    // TODO; fix issue
+    // const article = await this.articleRepository.findOne(id);
     const article = this.articles.find((article) => article.id == id);
     if (!article) {
       throw new NotFoundException();
