@@ -6,7 +6,7 @@ export async function scrapArticle(url) {
 
   const page = await browser.newPage();
 
-  await page.goto(url.url);
+  await page.goto(url);
 
   const content = await page.content();
 
