@@ -45,13 +45,11 @@ export class ArticlesService {
   }
 
   async deleteArticle(id: string) {
-    const found = await this.getArticleById(id);
+    const result = await this.articleRepository.delete(id);
 
-    if (!found) {
-      throw new NotFoundException();
+    if (!result.affected) {
+      throw new NotFoundException("Can't find the article");
     }
-
-    this.articles = this.articles.filter((article) => article.id !== found.id);
   }
 
   async updateArticleKeyword(id: string, keywords: string[]) {

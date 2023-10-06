@@ -33,8 +33,8 @@ export class ArticlesController {
   }
 
   @Delete('/:id')
-  deleteArticle(@Param('id') id: string): void {
-    this.articlesService.deleteArticle(id);
+  deleteArticle(@Param('id') id: string): Promise<void> {
+    return this.articlesService.deleteArticle(id);
   }
 
   @Patch('/:id/keywords')
