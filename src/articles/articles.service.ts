@@ -5,14 +5,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArticleRepository } from './article.repository';
 import { scrapArticle } from 'src/services/scrapper';
+import { KeywordRepository } from 'src/keywords/keyword.repository';
+import { extractKeywords } from 'src/services/openai';
 
 @Injectable()
 export class ArticlesService {
-  private articles: Article[] = [];
-
   constructor(
     @InjectRepository(ArticleRepository)
     private articleRepository: ArticleRepository,
+
+    @InjectRepository(KeywordRepository)
+    private keywordRepository: KeywordRepository,
   ) {}
 
   getAllArticles(): Promise<Article[]> {
@@ -33,17 +36,6 @@ export class ArticlesService {
     return article;
   }
 
-  async getArticleById(id: string) {
-    // TODO; fix issue
-    // const article = await this.articleRepository.findOne(id);
-    const article = this.articles.find((article) => article.id == id);
-    if (!article) {
-      throw new NotFoundException();
-    }
-
-    return article;
-  }
-
   async deleteArticle(id: string) {
     const result = await this.articleRepository.delete(id);
 
@@ -52,14 +44,34 @@ export class ArticlesService {
     }
   }
 
-  async updateArticleKeyword(id: string, keywords: string[]) {
+  async updateKeywords(keywords: string[]) {
+    for (const keyword of keywords) {
+      let existingKeyword = await this.keywordRepository.findOne({
+        where: { keyword },
+      });
+
+      if (existingKeyword) {
+        existingKeyword.count += 1;
+      } else {
+        existingKeyword = this.keywordRepository.create({ keyword, count: 0 });
+      }
+      await this.keywordRepository.save(existingKeyword);
+    }
+    return { message: 'keyword updated' };
+  }
+
+  async updateArticleKeyword(id: string) {
     const article = await this.articleRepository.findOne({ where: { id } });
+
     if (!article) {
       throw new Error(`Article with id ${id} not found`);
     }
 
+    const keywords = await extractKeywords(article.title);
+
     article.keywords = keywords;
     await this.articleRepository.save(article);
+    await this.updateKeywords(keywords);
     return article;
   }
 }

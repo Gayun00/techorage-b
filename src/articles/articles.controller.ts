@@ -27,21 +27,13 @@ export class ArticlesController {
     return this.articlesService.createArticle(url);
   }
 
-  @Get('/:id')
-  getArticleById(@Param('id') id: string): Promise<Article> {
-    return this.articlesService.getArticleById(id);
-  }
-
   @Delete('/:id')
   deleteArticle(@Param('id') id: string): Promise<void> {
     return this.articlesService.deleteArticle(id);
   }
 
   @Patch('/:id/keywords')
-  updateArticleKeyword(
-    @Param('id') id: string,
-    @Body('keywords') keywords: string[],
-  ) {
-    return this.articlesService.updateArticleKeyword(id, keywords);
+  updateArticleKeyword(@Param('id') id: string) {
+    return this.articlesService.updateArticleKeyword(id);
   }
 }
