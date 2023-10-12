@@ -3,7 +3,7 @@ import { typeORMConfig } from './configs/typeorm.config';
 import { ArticlesModule } from './articles/articles.module';
 import { Module } from '@nestjs/common';
 import { KeywordsModule } from './keywords/keywords.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/user.module';
 
 @Module({
   imports: [
