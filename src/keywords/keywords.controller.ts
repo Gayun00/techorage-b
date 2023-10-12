@@ -1,10 +1,9 @@
 import {
   Body,
   Controller,
-  // Delete,
+  Delete,
   Get,
-  // Param,
-  // Patch,
+  Param,
   Post,
   UsePipes,
   ValidationPipe,
@@ -25,5 +24,10 @@ export class KeywordsController {
   @UsePipes(ValidationPipe)
   createKeyword(@Body() { keywords }: { keywords: string[] }) {
     return this.keywordsService.createKeyword(keywords);
+  }
+
+  @Delete('/:id')
+  deleteKeyword(@Param() { id }: { id: string }) {
+    return this.keywordsService.deleteKeyword(id);
   }
 }

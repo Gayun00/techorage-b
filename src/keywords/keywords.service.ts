@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-// import { v4 as uuidv4 } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Keyword } from './keyword.entity';
 import { KeywordRepository } from './keyword.repository';
@@ -29,5 +28,9 @@ export class KeywordsService {
       await this.keywordRepository.save(existingKeyword);
     }
     return { message: 'keyword updated' };
+  }
+
+  async deleteKeyword(id: string) {
+    return this.keywordRepository.delete(id);
   }
 }
