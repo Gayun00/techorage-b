@@ -13,6 +13,8 @@ import {
 import { ArticlesService } from './articles.service';
 import { Article } from './articles.model';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { GetUser } from 'src/auth/get-user-decorator';
+import { User } from 'src/auth/user.entity';
 
 @Controller('articles')
 @UseGuards(JwtAuthGuard)
@@ -20,14 +22,14 @@ export class ArticlesController {
   constructor(private articlesService: ArticlesService) {}
 
   @Get('/')
-  getAllArticles(): Promise<Article[]> {
-    return this.articlesService.getAllArticles();
+  getAllArticles(@GetUser() user: User): Promise<Article[]> {
+    return this.articlesService.getAllArticles(user);
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  createArticle(@Body() { url }: { url: string }) {
-    return this.articlesService.createArticle(url);
+  createArticle(@Body() { url }: { url: string }, @GetUser() user: User) {
+    return this.articlesService.createArticle(url, user);
   }
 
   @Delete('/:id')
