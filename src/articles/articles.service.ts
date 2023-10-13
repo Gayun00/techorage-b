@@ -7,6 +7,7 @@ import { ArticleRepository } from './article.repository';
 import { scrapArticle } from 'src/services/scrapper';
 import { KeywordRepository } from 'src/keywords/keyword.repository';
 import { extractKeywords } from 'src/services/openai';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class ArticlesService {
@@ -18,11 +19,15 @@ export class ArticlesService {
     private keywordRepository: KeywordRepository,
   ) {}
 
-  getAllArticles(): Promise<Article[]> {
-    return this.articleRepository.find();
+  async getAllArticles(user: User): Promise<Article[]> {
+    const query = this.articleRepository.createQueryBuilder('article');
+
+    query.where('article.email = :email', { email: user.email });
+    const articles = await query.getMany();
+    return articles;
   }
 
-  async createArticle(url: string) {
+  async createArticle(url: string, user: User) {
     const { title, text } = await scrapArticle(url);
     const article: CreateArticleDto = this.articleRepository.create({
       id: uuidv4(),
@@ -30,6 +35,7 @@ export class ArticlesService {
       text,
       url,
       keywords: [],
+      user,
     });
 
     await this.articleRepository.save(article);
