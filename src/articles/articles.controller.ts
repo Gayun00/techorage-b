@@ -6,13 +6,16 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { Article } from './articles.model';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('articles')
+@UseGuards(JwtAuthGuard)
 export class ArticlesController {
   constructor(private articlesService: ArticlesService) {}
 
