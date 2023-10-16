@@ -1,6 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
+import { User } from 'src/auth/user.entity';
 
 export class CreateArticleDto {
+  @IsNotEmpty()
+  id: string;
+
   @IsNotEmpty()
   title: string;
 
@@ -12,4 +16,7 @@ export class CreateArticleDto {
 
   @IsNotEmpty()
   keywords: string[];
+
+  @IsNotEmpty()
+  user: User;
 }

@@ -1,4 +1,4 @@
-import { CreateArticleDto } from './dto/create-article.dto';
+import {} from './dto/create-article.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Article } from './articles.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,16 +20,19 @@ export class ArticlesService {
   ) {}
 
   async getAllArticles(user: User): Promise<Article[]> {
+    if (!user) return [];
     const query = this.articleRepository.createQueryBuilder('article');
 
-    query.where('article.email = :email', { email: user.email });
+    query.where('article.user.email = :email', { email: user.email });
     const articles = await query.getMany();
+    if (!articles) return [];
     return articles;
   }
 
   async createArticle(url: string, user: User) {
     const { title, text } = await scrapArticle(url);
-    const article: CreateArticleDto = this.articleRepository.create({
+
+    await this.articleRepository.createArticle({
       id: uuidv4(),
       title,
       text,
@@ -37,9 +40,6 @@ export class ArticlesService {
       keywords: [],
       user,
     });
-
-    await this.articleRepository.save(article);
-    return article;
   }
 
   async deleteArticle(id: string) {
@@ -70,7 +70,7 @@ export class ArticlesService {
     const article = await this.articleRepository.findOne({ where: { id } });
 
     if (!article) {
-      throw new Error(`Article with id ${id} not found`);
+      return [];
     }
 
     const keywords = await extractKeywords(article.title);
