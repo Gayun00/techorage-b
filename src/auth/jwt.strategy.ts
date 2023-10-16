@@ -1,9 +1,9 @@
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
-import { User } from './user.entity';
+// import { User } from './user.entity';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -18,13 +18,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload) {
-    const { email } = payload;
-    const user: User = await this.userRepository.findOne({ where: { email } });
+    // 새로운 유저의 경우 해당 에러를 발생시키지 않아야함.
+    // TODO: 로직 추가 검토 후 수정
+    // const { email } = payload;
+    // const user: User = await this.userRepository.findOne({ where: { email } });
 
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    return user;
+    // if (!user) {
+    //   throw new UnauthorizedException();
+    // }
+    return payload;
   }
 }
