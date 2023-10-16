@@ -1,4 +1,3 @@
-import {} from './dto/create-article.dto';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Article } from './articles.model';
 import { v4 as uuidv4 } from 'uuid';
@@ -23,7 +22,7 @@ export class ArticlesService {
     if (!user) return [];
     const query = this.articleRepository.createQueryBuilder('article');
 
-    query.where('article.user.email = :email', { email: user.email });
+    query.where('article.userId = :id', { id: user.id });
     const articles = await query.getMany();
     if (!articles) return [];
     return articles;
